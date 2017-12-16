@@ -10,6 +10,9 @@ class User(models.Model):
     email = models.CharField(max_length=50, blank=False, unique=True)
     password = models.CharField(max_length=100, blank=False)
 
+    def __str__(self):
+        return self.email
+
 
 class Blog(models.Model):
     """create model for blogs."""
