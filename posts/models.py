@@ -17,7 +17,7 @@ class User(models.Model):
         return self.email
 
 
-class Blog(models.Model):
+class Post(models.Model):
     """create model for blogs."""
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
