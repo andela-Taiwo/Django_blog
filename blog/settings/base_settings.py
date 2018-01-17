@@ -17,13 +17,16 @@ def bool_env(val):
     return True if os.environ.get(val, False) == 'True' else False
 
 #
-# DEBUG = True
+
+
+DEBUG = True
+
 # TEMPLATE_DEBUG = DEBUG
 
 
 ALLOWED_HOSTS = []
-
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
@@ -98,4 +101,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_pro', 'static_root')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static_pro', 'static_dev'),
+)
