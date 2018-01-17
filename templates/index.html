@@ -1,6 +1,96 @@
-<h3 > {{ title }}</h3>
-<form method="POST" action='.'>{% csrf_token  %}
-  {{ form }}
-  <input type="submit" value="Sign Up" />
 
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  {# Make modifiable head elements #}
+  <head>
+      <title>{% block title %}Home {% endblock title %} | CRM Easy</title>
+      {% block head_favicon %}
+          <link rel="icon" type="image/png"
+                href="{{ STATIC_URL }}images/favicon.ico">
+      {% endblock head_favicon %}
+      {% block head_meta %}
+          {% block head_meta_charset %}
+              <meta http-equiv="Content-Type"
+                    content="text/html; charset=utf-8" />
+          {% endblock head_meta_charset %}
+          {% block head_meta_contentlanguage %}
+              <meta http-equiv="Content-Language" value="en-US" />
+          {% endblock head_meta_contentlanguage %}
+          {% block head_meta_viewport %}
+              <meta name="viewport"
+                    content="width=device-width, initial-scale=1.0">
+          {% endblock head_meta_viewport %}
+      {% endblock head_meta %}
+      {% block head_css %}
+          {% block head_css_site %}
+              <link href="{{ STATIC_URL }}css/bootstrap.min.css"
+                    rel="stylesheet" media="screen">
+              <link href="{{ STATIC_URL }}css/app.css"
+                    rel="stylesheet" media="screen">
+          {% endblock head_css_site %}
+          {% block head_css_section %}{% endblock head_css_section %}
+          {% block head_css_page %}{% endblock head_css_page %}
+      {% endblock head_css %}
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default navbar-static-top navbar-dark bg-dark mb-4">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+        <a class="navbar-brand" href="#">Django Creek</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Posts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Signup</a>
+          </li>
+          {% endif %}
+        </ul>
+        <form class="form-inline mt-2 mt-md-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+    <h3 > {{ title }}</h3>
+    <form method="POST" action='.'>{% csrf_token  %}
+      {{ form }}
+      <input type="submit" value="Sign Up" />
+
+    </form>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    {% block footer_javascript %}
+       {% block footer_javascript_site %}
+           <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+           <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+           <script src="{{ STATIC_URL }}js/app.js"></script>
+       {% endblock footer_javascript_site %}
+       {% block footer_javascript_section %}{% endblock footer_javascript_section %}
+       {% block footer_javascript_page %}{% endblock footer_javascript_page %}
+   {% endblock footer_javascript %}
+  </body>
+</html>
