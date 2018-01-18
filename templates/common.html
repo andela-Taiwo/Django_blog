@@ -50,7 +50,7 @@
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Posts</a>
+            <a class="nav-link" href="posts.html">Posts</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Logout</a>
@@ -74,8 +74,11 @@
       </div>
     </div>
   </nav>
+  <div class="container-fluid">
+  <!-- Content here -->
+  {% block content %} {% endblock content %}
+</div>
 
-    {% block content %} {% endblock content %}
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     {% block footer_javascript %}

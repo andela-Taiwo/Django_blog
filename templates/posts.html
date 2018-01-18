@@ -1,2 +1,34 @@
 {% extends 'common.html' %}
-{% title %} Posts {% title %}
+{% block title %}Posts {% endblock title %}
+{% block content %}
+
+{% if user.is_authenticated %}
+  <h4> Welcome {{user}}</h4>
+    <div class="row justify-content-md-center">
+
+    <div class="col-8">
+      {% if posts %}
+      <div class="row justify-content-md-center">
+        {% for post in posts %}
+          <div class="col-4">
+            <h5>{{ post.title }}</h5>
+            <blockquote> {{ post.content }}</blockquote>
+            Author: <em>{{ post.author }}</em>
+          </div>
+        {% endfor %}
+        {% else %}
+        <h4> No Posts available yet</h4>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-4">
+      <h5>{{title}}</h5>
+      <form  method="POST" action="." >{% csrf_token  %}
+      {{ form.as_p }}
+      <input class="button button-default" value="Post" type="submit" />
+    </form>
+    </div>
+  </div>
+
+{% endif %}
+{% endblock content %}
