@@ -1,3 +1,12 @@
 from django.test import TestCase
+from django.core.urlresolvers import resolve
 
-# Create your tests here.
+from django.test import TestCase
+from posts.views import home
+
+
+class HomePageTest(TestCase):
+
+    def test_root_url_resolves_to_home_page_view(self):
+        found = resolve('/')
+        self.assertEqual(found.func, home)

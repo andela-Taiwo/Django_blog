@@ -1,10 +1,49 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
-from .forms import SignUpForm, ContactForm, SignInForm
+from django.http import HttpResponse
+from django.views.generic import View
+
+from posts.models import Post, User
+from .forms import SignUpForm, ContactForm, SignInForm, PostForm
 
 
 # Create your views here.
+
+class MyView(View):
+    template_name = 'posts.html'
+    STATIC_URL = settings.STATIC_URL
+
+    def get(self, request, *args, **kwargs):
+        # <view logic>
+        title = "Post a blog"
+        form = PostForm(request.POST or None)
+        posts = Post.objects.all()
+        context = {
+            'title': title,
+            'form': form,
+            'posts': posts,
+            'STATIC_URL': self.STATIC_URL
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        title = "Blog suceessfully posted"
+        form = PostForm(request.POST or None)
+        # import pdb; pdb.set_trace
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.user_id = User.objects.get(pk=request.user.pk)
+            post.save()
+
+        context = {
+            'title': title,
+            'STATIC_URL': settings.STATIC_URL
+        }
+        return render(request, 'posts.html', context)
+
+
 def home(request):
 
     title = " DjangoCreek SignIn "
