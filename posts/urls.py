@@ -5,5 +5,5 @@ from django.contrib import admin
 from posts.views import MyView
 
 urlpatterns = [
-    url(r'^$', MyView.as_view(), name='posts')
+    url(r'^$', MyView.as_view(), name='posts'),
 ]

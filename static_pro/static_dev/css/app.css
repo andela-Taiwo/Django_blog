@@ -1,0 +1,19 @@
+
+body {background: rgba(0,0,0,0.2)}
+.thumbnail.col-4.content{
+  width: 13em;
+  background: rgba(248,253,250,0.8);
+  overflow-wrap: break-word;
+  border-width: thin;
+  padding: 5px 10px;
+  margin-top: auto;
+}
+.row.justify-content-md-center.post{
+margin: 20px;
+}
+.row.justify-content-md-center.posts{
+margin: 0 30px;
+}
+.panel.panel-default{
+margin-top: 20px;
+}

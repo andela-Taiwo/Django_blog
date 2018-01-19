@@ -8,8 +8,11 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 """
 
 import os
+import dotenv
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
+
+dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.base_settings")
 application = Cling(get_wsgi_application())
