@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
   {# Make modifiable head elements #}
   <head>
-      <title>{% block title %}Home {% endblock title %} | Django Creek</title>
+    <title>{% block title %}Home {% endblock title %}| Django Creek</title>
       {% block head_favicon %}
           <link rel="icon" type="image/png"
                 href="{{ STATIC_URL }}images/favicon.ico">
@@ -25,6 +24,7 @@
           {% block head_css_site %}
               <link href="{{ STATIC_URL }}css/bootstrap.min.css"
                     rel="stylesheet" media="screen">
+                    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
               <link href="{{ STATIC_URL }}css/app.css"
                     rel="stylesheet" media="screen">
           {% endblock head_css_site %}
@@ -83,7 +83,6 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     {% block footer_javascript %}
        {% block footer_javascript_site %}
-           <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
            <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
            <script src="{{ STATIC_URL }}js/app.js"></script>
        {% endblock footer_javascript_site %}
