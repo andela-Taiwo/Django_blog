@@ -1,6 +1,6 @@
 
 import os
-
+import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
@@ -8,8 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ.get('SECRET_KEY')
-SECRET_KEY = '6vqjhxpqv80-*q^y1)km_rajlw6dkf8ind7ubl1o1w^5f4c^7z'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -22,7 +21,7 @@ def bool_env(val):
 
 DEBUG = True
 
-# TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = DEBUG
 
 
 ALLOWED_HOSTS = []
@@ -86,6 +85,9 @@ DATABASES = {
         'PORT':  os.environ.get('DATABASE_PORT'),
     }
 }
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
