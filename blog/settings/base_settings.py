@@ -1,9 +1,7 @@
-
 import os
 import sys
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -41,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'posts',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,3 +109,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_pro', 'static_root')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static_pro', 'static_dev'),
 )
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

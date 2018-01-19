@@ -1,3 +1,6 @@
-.collapse .navbar-collapse li{
-  display: inline-block;
+
+.content{
+  width: 13em;
+  background: lime;
+  overflow-wrap: break-word;
 }
