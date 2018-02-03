@@ -53,3 +53,10 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+/staticfiles/admin/*
+/staticfiles/css/*
+/staticfiles/js/*
+/staticfiles/media_root/*
+/staticfiles/markdownx/*
+/staticfiles/glyph-iconset-master/*
+/staticfiles/staticfiles.json
