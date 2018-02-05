@@ -5,8 +5,8 @@ from django.contrib import admin
 from posts.views import MyView, post_update
 
 urlpatterns = [
-    url(r'^$', 'posts.views.home', name='home'),
-    # url(r'^posts/$', MyView.as_view(), name='posts'),
+    url(r'^$', include('posts.urls')),
+    url(r'^signin/$', 'posts.views.home', name='home'),
     url(r'^posts/', include('posts.urls')),
     url(r'^posts/(?P<id>[0-9]+)/edit/$', 'posts.views.post_update', name='update'),
     url(r'^posts/(?P<id>[0-9]+)/detail/$', 'posts.views.post_detail', name='detail'),

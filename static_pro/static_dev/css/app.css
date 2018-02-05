@@ -17,3 +17,12 @@ margin: 0 30px;
 .panel.panel-default{
 margin-top: 20px;
 }
+.footer.bg-dark{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(243,255,255,0.9);
+  color: white;
+  text-align: center;
+}

@@ -7,14 +7,15 @@ from .models import User
 
 
 class SignUserAdmin(admin.ModelAdmin):
-    list_display = ["email", "full_name", "date_created"]
+    list_display = ["id", "email", "full_name", "date_created"]
+    readonly_fields = ('id',)
     form = SignUpForm
     # class meta:
     #     User
 
 
 class PostsAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "user_id", "date_created", "date_updated"]
+    list_display = ["__str__", "user_id", "slug", "date_created", "date_updated"]
 
 
 admin.site.register(User, SignUserAdmin)
