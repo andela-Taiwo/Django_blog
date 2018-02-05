@@ -1,35 +1,40 @@
 from django.test import TestCase
-from posts.models import User, Post
+from posts.models import Post
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
-class UserModelTest(TestCase):
+class PostModelTest(TestCase):
 
     def setUp(self):
-        full_name = "only test"
+        first_name = "only"
+        last_name = "test"
+        username = '@onlytest'
         email = "test@gmail.com"
         password = "123444"
-        User.objects.create(full_name=full_name,
+        User.objects.create(first_name=first_name,
+                            last_name=last_name,
                             email=email, password=password,
-                            date_created=timezone.now(),
-                            date_updated=timezone.now())
+                            username=username)
 
     def test_user_creation(self):
         user = User.objects.get(email="test@gmail.com")
         self.assertTrue(isinstance(user, User))
-        self.assertEqual(user.__str__(), str(user.email))
+        self.assertEqual(user.__str__(), str(user.username))
 
 
 class ModelTest(TestCase):
 
     def setUp(self):
-        full_name = "only test"
+        first_name = "only"
+        last_name = "test"
+        username = '@onlytest'
         email = "test@gmail.com"
         password = "123444"
-        User.objects.create(full_name=full_name,
+        User.objects.create(first_name=first_name,
+                            last_name=last_name,
                             email=email, password=password,
-                            date_created=timezone.now(),
-                            date_updated=timezone.now())
+                            username=username)
         title = "Learning Django"
         content = "The real aspect of Django \n it is actually cool"
         Post.objects.create(title=title, content=content,
