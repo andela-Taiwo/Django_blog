@@ -1,7 +1,5 @@
 import os
 import sys
-import dj_database_url
-from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 # Quick-start development settings - unsuitable for production
@@ -21,10 +19,11 @@ def bool_env(val):
 
 DEBUG = True
 
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = False
 
 
-ALLOWED_HOSTS = ['.herokuapp.com', '.django-creek1.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com',
+                 '.django-creek.herokuapp.com']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -54,6 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
 )
 
@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -108,12 +109,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_pro', 'static_root')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static_pro', 'static_dev'),
-)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join((BASE_DIR), "staticfiles")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join((BASE_DIR), "staticfiles", 'media')
+MEDIA_ROOT = os.path.join((BASE_DIR), "staticfiles", "media_root")
+
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
