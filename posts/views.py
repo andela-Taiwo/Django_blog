@@ -1,134 +1,166 @@
-from django.conf import settings
 from django.core.mail import send_mail
-from datetime import datetime
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import login as auth_login, authenticate
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 from django.views.generic import View
-from posts.models import Post, User
-from .forms import SignUpForm, ContactForm, SignInForm, PostForm
+from django.contrib.auth.models import User
+from posts.models import Post
+from .forms import SignUpForm, ContactForm, LogInForm, PostForm
 
 
 # Create your views here.
 
-class MyView(View):
+class PostView(View):
     template_name = 'posts.html'
-    STATIC_URL = settings.STATIC_URL
-    http_method_names = ['get', 'POST', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def get(self, request, *args, **kwargs):
         # <view logic>
         title = "Post a blog"
-        form = PostForm(request.POST or None)
+        form = PostForm(request.POST or None, request.FILES or
+                        None)
         posts = Post.objects.all()
+        # import pdb; pdb.set_trace()
         context = {
             'title': title,
-            'form': form,
             'posts': posts,
-            'STATIC_URL': self.STATIC_URL
+            "form": form,
         }
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        title = "Blog suceessfully posted"
-        form = PostForm(request.POST or None)
+        form = PostForm(request.POST or None, request.FILES or
+                        None)
         if request.method == 'POST':
             if form.is_valid():
                 post = form.save(commit=False)
                 post.author = request.user
                 post.user_id = User.objects.get(pk=request.user.pk)
                 post.save()
+        return HttpResponseRedirect('/posts')
+
+
+class PostUpdateView(View):
+    template_name = 'post_edit.html'
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+
+    def post(self, request, slug=None, *args, **kwargs):
+        instance = get_object_or_404(Post, slug=slug)
+        form = PostForm(request.POST or None, request.FILES or
+                        None, instance=instance)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return HttpResponseRedirect('/posts')
+
+    def get(self, request, slug=None, *args, **kwargs):
+        instance = get_object_or_404(Post, slug=slug)
+        form = PostForm(request.POST or None, request.FILES or
+                        None, instance=instance)
+        context = {
+            "title": instance.title,
+            "form": form,
+            }
+        return render(request, self.template_name, context)
+
+
+class PostDetailView(View):
+    template_name = "post_detail.html"
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+
+    def get(self, request, slug=None, *args, **kwargs):
+            instance = get_object_or_404(Post, slug=slug)
+            if instance:
+                context = {
+                    "title": instance.title,
+                    "post": instance,
+                    }
+                return render(request, self.template_name, context)
             return HttpResponseRedirect('/posts')
 
 
-def home(request):
+class LoginView(View):
+    template_name = 'login.html'
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    title = " DjangoCreek SignIn "
-    form = SignInForm(request.POST or None)
-    context = {
-        "title": title,
-        "form": form,
-        "STATIC_URL": settings.STATIC_URL
-    }
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.email = form.cleaned_data.get('email')
-        if instance.email:
-            instance.save()
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    auth_login(request, user)
+                    print("I got here")
+                    return HttpResponseRedirect('/posts')
+                else:
+                    return render(request, '<h3>Not active</h3>')
+
+    def get(self, request, *args, **kwargs):
+        #
+        title = " DjangoCreek Login "
+        form = LogInForm(request.POST or None)
         context = {
-            "title": "Thank You"
+            "title": title,
+            "form": form,
         }
-    return render(request, 'index.html', context)
+        return render(request, self.template_name, context)
 
 
-def register(request):
+class SignUpView(View):
+    template_name = 'signup.html'
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    title = " Welcome to Django creek {}" .format(request.user)
-    form = SignUpForm(request.POST or None)
-    context = {
-        "title": title,
-        "form": form,
-        "STATIC_URL": settings.STATIC_URL
-    }
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.email = form.cleaned_data.get('email')
-        if instance.email:
-            instance.save()
+    def post(self, request, *args, **kwargs):
+
+        form = SignUpForm(request.POST or None)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.save()
+
+            raw_password = form.cleaned_data.get('password1')
+
+            user = authenticate(username=user.email, password=raw_password)
+            auth_login(request, user)
+            return HttpResponseRedirect('/posts')
+
+    def get(self, request, *args, **kwargs):
+        form = SignUpForm()
+        title = "SignUp"
         context = {
-            "title": "Thank You",
-            "STATIC_URL": settings.STATIC_URL
+            "title": title,
+            "form": form,
         }
-    return render(request, 'index.html', context)
+        return render(request, self.template_name, context)
 
 
-def post_update(request, id):
-    instance = get_object_or_404(Post, pk=id)
-    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
-        # messages.success(request, "<a href='#'>Item</a> Saved", extra_tags='html_safe')
-        return HttpResponseRedirect('/posts')
+class ContactView(View):
+    template_name = 'contact.html'
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    context = {
-		"title": instance.title,
-		"instance": instance,
-		"form":form,
-	}
-    return render(request, "post_edit.html", context)
+    def post(self, request):
+        form = ContactForm(request.POST or None)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            full_name = form.cleaned_data.get("full_name")
+            message = form.cleaned_data.get("message")
+            subject = form.cleaned_data.get("subject")
+            try:
+                send_mail(subject, message,
+                          email,
+                          ['sokunbimaimunah@gmail.com'], fail_silently=False)
+            except ValueError:
+                raise ValueError
 
+        return HttpResponseRedirect('/contact')
 
-def post_detail(request, id):
-    instance = get_object_or_404(Post, pk=id)
-    if instance:
+    def get(self, request):
+        form = ContactForm(request.POST or None)
+        title = "Contact Us"
         context = {
-            "title": instance.title,
-            "post": instance,
-            "STATIC_URL": settings.STATIC_URL
-            }
-        return render(request, "post_detail.html", context)
-    return HttpResponseRedirect('/posts')
-
-
-def contact(request):
-    form = ContactForm(request.POST or None)
-    context = {
-        "form": form,
-        "STATIC_URL": settings.STATIC_URL
-    }
-    if form.is_valid():
-        email = form.cleaned_data.get('email')
-        full_name = form.cleaned_data.get("full_name")
-        context = {
-            "STATIC_URL": settings.STATIC_URL,
-            "title": "Thank You"
+            "title": title,
+            "form": form,
         }
-        try:
-            send_mail('Subject here', 'Here is the message.',
-                      'sokunbimaimunah@gmail.com',
-                      ['sokunbimaimunah@gmail.com'], fail_silently=False)
-            print("yay worked")
-        except ValueError:
-            raise ValueError
 
-    return render(request, 'index.html', context)
+        return render(request, self.template_name, context)
