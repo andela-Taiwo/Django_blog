@@ -1,0 +1,50 @@
+
+body {background: rgba(0,0,0,0.2)}
+.thumbnail.col-4.content{
+  width: 13em;
+  background: rgba(248,253,250,0.8);
+  overflow-wrap: break-word;
+  border-width: thin;
+  padding: 5px 10px;
+  margin-top: auto;
+}
+.row.justify-content-md-center.post{
+margin: 20px;
+}
+.row.justify-content-md-center.posts{
+margin: 0 30px;
+}
+.panel.panel-default{
+margin-top: 20px;
+}
+.footer.bg-dark{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(243,255,255,0.9);
+  color: white;
+  text-align: center;
+}
+
+.card-link {
+  font-size: 12px; !important
+  color: red;!important
+}
+
+.glyph-icon {
+width:16px;
+height:16px;
+text-align: right;
+}
+.btn-primary{
+  background-color: rgba(0,0,0,0.7);
+  height: auto;
+  width: auto;
+}
+.btn-primary:hover{
+  background-color: rgba(0,0,0,0.5); !important
+}
+.message{
+  color: #fff;
+}

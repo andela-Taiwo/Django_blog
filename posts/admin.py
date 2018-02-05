@@ -1,21 +1,13 @@
 from django.contrib import admin
-
 # Register your models here.
+from django.contrib.auth.models import User
 from .forms import SignUpForm
 from .models import Post
-from .models import User
-
-
-class SignUserAdmin(admin.ModelAdmin):
-    list_display = ["email", "full_name", "date_created"]
-    form = SignUpForm
-    # class meta:
-    #     User
 
 
 class PostsAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "user_id", "date_created", "date_updated"]
+    list_display = ["__str__", "user_id", "slug",
+                    "date_created", "date_updated", "publish"]
 
 
-admin.site.register(User, SignUserAdmin)
 admin.site.register(Post, PostsAdmin)

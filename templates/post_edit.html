@@ -1,9 +1,10 @@
 {% extends 'common.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+
 <div class="col-4">
   <h5>{{title}}</h5>
-  <form  method="POST" action=".">{% csrf_token  %}
+  <form  method="POST" action="."  enctype="multipart/form-data">{% csrf_token  %}
   {{ form|crispy }}
   <input class="button button-default" value="Update Post" type="submit" />
 </form>
