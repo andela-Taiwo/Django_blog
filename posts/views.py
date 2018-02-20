@@ -1,11 +1,16 @@
 from django.core.mail import send_mail
+from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
+from markdownx.utils import markdownify
 from django.views.generic import View
 from django.contrib.auth.models import User
 from posts.models import Post
-from .forms import SignUpForm, ContactForm, LogInForm, PostForm
+from comments.models import Comment
+from .forms import SignUpForm, ContactForm, LogInForm, PostForm, ProfileForm
+from comments.forms import CommentForm
 
 
 # Create your views here.
@@ -20,6 +25,8 @@ class PostView(View):
         form = PostForm(request.POST or None, request.FILES or
                         None)
         posts = Post.objects.all()
+        for post in posts:
+            post.content = markdownify(post.content)
         # import pdb; pdb.set_trace()
         context = {
             'title': title,
@@ -44,6 +51,7 @@ class PostUpdateView(View):
     template_name = 'post_edit.html'
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
+    @login_required
     def post(self, request, slug=None, *args, **kwargs):
         instance = get_object_or_404(Post, slug=slug)
         form = PostForm(request.POST or None, request.FILES or
@@ -53,6 +61,7 @@ class PostUpdateView(View):
             instance.save()
             return HttpResponseRedirect('/posts')
 
+    @login_required
     def get(self, request, slug=None, *args, **kwargs):
         instance = get_object_or_404(Post, slug=slug)
         form = PostForm(request.POST or None, request.FILES or
@@ -69,14 +78,56 @@ class PostDetailView(View):
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def get(self, request, slug=None, *args, **kwargs):
-            instance = get_object_or_404(Post, slug=slug)
-            if instance:
+            post = get_object_or_404(Post, slug=slug)
+            post.content = markdownify(post.content)
+            comment_form = CommentForm(request.POST or None)
+            comment = Comment.objects.filter(post=post.id)
+            if post:
                 context = {
-                    "title": instance.title,
-                    "post": instance,
+                    "title": post.title,
+                    "post": post,
+                    "form": comment_form,
+                    "comments": comment
+
                     }
                 return render(request, self.template_name, context)
             return HttpResponseRedirect('/posts')
+
+    def post(self, request, slug=None, *args, **kwargs):
+        post = get_object_or_404(Post, slug=slug)
+        # import pdb;pdb.set_trace()
+        if request.method == 'POST':
+            comment_form = CommentForm(request.POST or None)
+            if comment_form.is_valid() and request.user.is_authenticated():
+                # content = comment_form.clean_message()
+                temp = comment_form.save(commit=False)
+                parent = comment_form['parent'].value()
+                content_data = comment_form.clean_message()
+
+                if parent == '':
+                    #Set a blank path then save it to get an ID
+                    temp.path = []
+                    temp.author = request.user
+                    temp.post = post
+                    temp.save()
+                    temp.path = [temp.id]
+                else:
+                    #Get the parent node
+                    node = Comment.objects.filter(id=parent)
+                    if node.exists() and node.count() == 1:
+                        node = node.first()
+                    temp.depth = node.depth + 1
+                    temp.path = node.path
+                    temp.author = request.user
+                    temp.post = post
+                    #Store parents path then apply comment ID
+                    temp.save()
+                    temp.path.append(temp.id)
+
+                #Final save for parents and children
+                temp.save()
+        comments = Comment.objects.all().order_by('path')
+        return HttpResponseRedirect('/posts/{0}'.format(post.slug))
 
 
 class LoginView(View):
@@ -91,7 +142,6 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     auth_login(request, user)
-                    print("I got here")
                     return HttpResponseRedirect('/posts')
                 else:
                     return render(request, '<h3>Not active</h3>')
@@ -120,10 +170,8 @@ class SignUpView(View):
             user.save()
 
             raw_password = form.cleaned_data.get('password1')
-
-            user = authenticate(username=user.email, password=raw_password)
             auth_login(request, user)
-            return HttpResponseRedirect('/posts')
+        return HttpResponseRedirect('/posts')
 
     def get(self, request, *args, **kwargs):
         form = SignUpForm()
@@ -133,6 +181,38 @@ class SignUpView(View):
             "form": form,
         }
         return render(request, self.template_name, context)
+
+
+class ProfileView(View):
+    template_name = 'profile.html'
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+
+    def get(self, request, *args, **kwargs):
+        user_form = SignUpForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+        context = {
+            'user_form': user_form,
+            'profile_form': profile_form
+
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request,  *args, **kwargs):
+        if request.method == 'POST':
+            user_form = SignUpForm(request.POST, instance=request.user)
+            profile_form = ProfileForm(request.POST,
+                                       request.FILES or None,
+                                       instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+
+            user_form.save()
+            profile_form.save()
+            messages.add_message(request, messages.SUCCESS, 'Your profile was successfully updated!')
+
+            return HttpResponseRedirect('/posts')
+        else:
+            messages.add_message(request, messages.ERROR, 'Please correct the error below')
+            return HttpResponseRedirect('/')
 
 
 class ContactView(View):

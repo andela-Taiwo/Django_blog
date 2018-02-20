@@ -1,7 +1,9 @@
-from django import forms
 from django.db.models.signals import pre_save
+from django.db.models.signals import post_save as signals_post_save
 from django.core.urlresolvers import reverse
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -11,8 +13,12 @@ from django.contrib.auth.models import User
 
 def upload_location(instance, filename):
     PostModel = instance.__class__
-    new_id = PostModel.objects.order_by("id").last().id + 1
+    posts = PostModel.objects.all()
+    if posts:
+        new_id = PostModel.objects.order_by("id").last().id + 1
+        return "%s/%s" % (new_id, filename)
 
+    new_id = 1
     return "%s/%s" % (new_id, filename)
 
 
@@ -63,3 +69,27 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_post_receiver, sender=Post)
+
+
+class Profile(models.Model):
+    "create model for users profile"
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    birth_date = models.DateField(auto_now=False, blank=True, null=True)
+    picture = models.ImageField(upload_to=upload_location,
+                                blank=True, null=True,
+                                width_field="width_field",
+                                height_field="height_field")
+    height_field = models.IntegerField(default=0, null=True)
+    width_field = models.IntegerField(default=0, null=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+
+
+@receiver(signals_post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(signals_post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

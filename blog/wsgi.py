@@ -14,7 +14,7 @@ from dj_static import Cling
 
 dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.prod_settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.base_settings")
 from whitenoise.django import DjangoWhiteNoise
 application = get_wsgi_application()
 application = DjangoWhiteNoise(application)
