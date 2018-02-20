@@ -55,3 +55,10 @@ coverage.xml
 docs/_build/
 **/media_cdn/
 **/.DS_Store
+/staticfiles/admin/*
+/staticfiles/css/*
+/staticfiles/js/*
+/staticfiles/glyph-iconset-master/*
+/staticfiles/staticfiles.json
+/staticfiles/media_root/*
+/staticfiles/markdownx/*
