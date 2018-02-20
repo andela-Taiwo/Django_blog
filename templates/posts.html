@@ -18,6 +18,7 @@
         {{ form|crispy }}
         <input class="button button-default" id="update_post" value="Post" type="submit" />
       </form>
+      {{ form.media }}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -30,10 +31,10 @@
     <div class="row justify-content-md-center post">
       <div class="col-12">
         {% if posts %}
-        <div class="row justify-content-md-center posts" >
+        <div class="row justify-content-md-left posts" >
           {% for post in posts %}
-          <div class="col-lg-3 d-flex align-items-stretch content">
-          <div class="card" style="width: 22rem;">
+          <div class="col-lg-6 d-flex align-items-stretch content">
+          <div class="card" style="width: 100%;">
             {% if post.blog_image %}
              <img  class="card-img-top" src='{{ post.blog_image.url }}' class='img-responsive' height="250"  />
             {% else %}
@@ -41,8 +42,8 @@
             {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ post.title }}</h5>
-              <p class="card-text">{{ post.content|linebreaks|truncatechars:70 }}</p>
-              <a href='{{post.slug}}' class="btn btn-small btn-primary">Read more ...</a>
+              <p class="card-text">{{ post.content|safe|linebreaks|truncatechars:70 }}</p>
+              <a href='posts/{{post.slug}}' class="btn btn-small btn-primary">Read more ...</a>
           </div>
           <div class="card-footer">
 
@@ -51,6 +52,7 @@
             {% if post.user_id.pk == request.user.pk %}
             <a class='editPost' href='{{post.slug}}/edit'>
               <img class="glyph-icon" src='{% static "glyph-iconset-master/svg/si-glyph-document-plus.svg" %}'/></a>
+              <span class="glyphicon glyphicon-pencil"></span>
             {% endif %}
           </div>
         </div>
