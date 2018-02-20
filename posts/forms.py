@@ -1,9 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.template.defaultfilters import slugify
-import itertools
-from .models import Post
-from django.db import models
+from markdownx.fields import MarkdownxFormField
+from .models import Post, Profile
 from django.contrib.auth.models import User
 
 
@@ -55,7 +54,7 @@ class LogInForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
-    # blog_image = forms.FileField()
+    content = MarkdownxFormField()
 
     class Meta:
         model = Post
@@ -97,3 +96,9 @@ class ContactForm(forms.Form):
         email = self.cleaned_data.get("email")
         print(email)
         return email
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('picture', 'gender')
