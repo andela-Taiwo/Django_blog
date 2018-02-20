@@ -40,9 +40,16 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'posts',
+    'comments',
     'crispy_forms',
+    'markdownx',
 )
 
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.sane_lists',
+    'markdown.extensions.nl2br',
+    'markdown.extensions.extra',
+]
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
