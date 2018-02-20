@@ -1,5 +1,7 @@
 import os
 import sys
+import dj_database_url
+from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 # Quick-start development settings - unsuitable for production
@@ -22,7 +24,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com', '.django-creek1.herokuapp.com']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -51,6 +53,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 )
 
 ROOT_URLCONF = 'blog.urls'
@@ -74,6 +78,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
+# DATABASES['default'].update(db_from_env)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -109,4 +115,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_pro', 'static_root')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static_pro', 'static_dev'),
 )
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
