@@ -33,17 +33,17 @@
         {% if posts %}
         <div class="row justify-content-md-left posts" >
           {% for post in posts %}
-          <div class="col-lg-6 d-flex align-items-stretch content">
-          <div class="card" style="width: 100%;">
+          <div class="col-lg-4 d-flex align-items-stretch content">
+          <div class="card" style="width: 95%;">
             {% if post.blog_image %}
-             <img  class="card-img-top" src='{{ post.blog_image.url }}' class='img-responsive' height="250"  />
+             <img  class="card-img-top" src='{{ post.blog_image.url }}' class='img-responsive' height="220" width="250" />
             {% else %}
             <img  src="{{ post.image.url }}" alt="{{post.title}}" height="250" >
             {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ post.title }}</h5>
               <p class="card-text">{{ post.content|safe|linebreaks|truncatechars:70 }}</p>
-              <a href='posts/{{post.slug}}' class="btn btn-small btn-primary">Read more ...</a>
+              <a href='/{{post.slug}}' class="btn btn-small btn-primary">Read more ...</a>
           </div>
           <div class="card-footer">
 

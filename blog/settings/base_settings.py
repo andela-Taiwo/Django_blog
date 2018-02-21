@@ -21,7 +21,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = False
 
-
+LOGIN_URL = '/login'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com',
                  '.django-creek.herokuapp.com']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'comments',
     'crispy_forms',
     'markdownx',
+    'storages',
 )
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
@@ -116,14 +117,29 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join((BASE_DIR), "staticfiles")
-STATICFILES_DIRS = (
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-)
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join((BASE_DIR), "staticfiles", 'media')
-MEDIA_ROOT = os.path.join((BASE_DIR), "staticfiles", "media_root")
+]
+MEDIAFILES_LOCATION = 'media'
+STATICFILES_LOCATION = 'static'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+
+STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+
+
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
