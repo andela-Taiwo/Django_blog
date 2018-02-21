@@ -64,13 +64,13 @@
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="/posts">Posts</a>
+            <a class="nav-link" href="/">Posts</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/posts" data-toggle="modal" data-target="#postModal">Post a blog</a>
+            <a class="nav-link" href="/" data-toggle="modal" data-target="#postModal">Post a blog</a>
           </li>
           {% if user.profile.picture %}
           <li class="nav-item">
@@ -89,7 +89,7 @@
             <a class="nav-link" href="/signup">Signup</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/posts">Posts</a>
+            <a class="nav-link" href="/">Posts</a>
           </li>
           {% endif %}
         </ul>
