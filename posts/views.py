@@ -44,14 +44,14 @@ class PostView(View):
                 post.author = request.user
                 post.user_id = User.objects.get(pk=request.user.pk)
                 post.save()
-        return HttpResponseRedirect('/posts')
+        return HttpResponseRedirect('/')
 
 
 class PostUpdateView(View):
     template_name = 'post_edit.html'
     http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-    @login_required
+    # @login_required
     def post(self, request, slug=None, *args, **kwargs):
         instance = get_object_or_404(Post, slug=slug)
         form = PostForm(request.POST or None, request.FILES or
@@ -59,9 +59,9 @@ class PostUpdateView(View):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            return HttpResponseRedirect('/posts')
+            return HttpResponseRedirect('/')
 
-    @login_required
+    # @login_required
     def get(self, request, slug=None, *args, **kwargs):
         instance = get_object_or_404(Post, slug=slug)
         form = PostForm(request.POST or None, request.FILES or
@@ -91,7 +91,7 @@ class PostDetailView(View):
 
                     }
                 return render(request, self.template_name, context)
-            return HttpResponseRedirect('/posts')
+            return HttpResponseRedirect('/')
 
     def post(self, request, slug=None, *args, **kwargs):
         post = get_object_or_404(Post, slug=slug)
@@ -127,7 +127,7 @@ class PostDetailView(View):
                 #Final save for parents and children
                 temp.save()
         comments = Comment.objects.all().order_by('path')
-        return HttpResponseRedirect('/posts/{0}'.format(post.slug))
+        return HttpResponseRedirect('/{0}'.format(post.slug))
 
 
 class LoginView(View):
@@ -142,9 +142,10 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     auth_login(request, user)
-                    return HttpResponseRedirect('/posts')
+                    return HttpResponseRedirect('/')
                 else:
                     return render(request, '<h3>Not active</h3>')
+            return HttpResponseRedirect('/')
 
     def get(self, request, *args, **kwargs):
         #
@@ -209,7 +210,7 @@ class ProfileView(View):
             profile_form.save()
             messages.add_message(request, messages.SUCCESS, 'Your profile was successfully updated!')
 
-            return HttpResponseRedirect('/posts')
+            return HttpResponseRedirect('/')
         else:
             messages.add_message(request, messages.ERROR, 'Please correct the error below')
             return HttpResponseRedirect('/')
