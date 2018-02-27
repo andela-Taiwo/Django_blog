@@ -51,7 +51,7 @@
             <a class="card-link" href="">{{ post.date_created }}</a>
             {% if post.user_id.pk == request.user.pk %}
             <a class='editPost' href='{{post.slug}}/edit'>
-              <img class="glyph-icon" src='{% static "glyph-iconset-master/svg/si-glyph-document-plus.svg" %}'/></a>
+              <img class="glyph-icon" src='{% static "glyph-iconset-master/svg/si-glyph-document-edit.svg" %}'/></a>
               <span class="glyphicon glyphicon-pencil"></span>
             {% endif %}
           </div>

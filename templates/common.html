@@ -1,5 +1,6 @@
 {% load static from staticfiles %}
 {% load formatted_markdown %}
+{% load notifications_tags %}
 <!DOCTYPE html>
 <html lang="en">
   {# Make modifiable head elements #}
@@ -73,6 +74,7 @@
             <a class="nav-link" href="/" data-toggle="modal" data-target="#postModal">Post a blog</a>
           </li>
           {% if user.profile.picture %}
+
           <li class="nav-item">
             <a class="nav-link" href="/profile"><img  class="rounded float-left" width="28" height="24" src="{{user.profile.picture.url}}" /></a>
           </li>
@@ -81,6 +83,18 @@
             <a class="nav-link" href="/profile">{{user}}</a>
           </li>
           {% endif %}
+            {% notifications_unread as unread_count %}
+                {% if unread_count %}
+                <li class="nav-item" style="background: url('{% static "glyph-iconset-master/svg/si-glyph-bell.svg" %}') no-repeat; background-color: rgba(250,248,245,0.7); width: 16px; height: 16px; margin-top: 12px;">
+                  <a href="/" data-toggle="modal"  data-target="#notificationModal">
+                    {% live_notify_badge classes="badge" %}
+                   <span class="glyphicon glyphicon-bell"></span>
+                  </a>
+
+                </li>
+
+
+                {% endif %}
           {% else %}
           <li class="nav-item">
             <a class="nav-link" href='/login'>Login</a>
@@ -98,6 +112,27 @@
     </div>
   </nav>
   <div class="container-fluid">
+    <!-- Modal -->
+    <div id="notificationModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Notification</h4>
+          </div>
+          <div class="modal-body">
+            You have <strong>{% live_notify_badge %}</strong> unread notifications.
+            {% live_notify_list %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   <!-- Content here -->
   {% block content %} {% endblock content %}
 </div>
@@ -111,6 +146,8 @@
     {% block footer_javascript %}
        {% block footer_javascript_site %}
            <script src='{% static "js/bootstrap.min.js" %}'></script>
+           <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
        {% endblock footer_javascript_site %}
        {% block footer_javascript_section %}{% endblock footer_javascript_section %}
        {% block footer_javascript_page %}{% endblock footer_javascript_page %}

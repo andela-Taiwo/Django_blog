@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect
 from markdownx.utils import markdownify
 from django.views.generic import View
 from django.contrib.auth.models import User
+# from notification.models import Notification
+from notifications.signals import notify
 from posts.models import Post
 from comments.models import Comment
 from .forms import SignUpForm, ContactForm, LogInForm, PostForm, ProfileForm
@@ -87,7 +89,7 @@ class PostDetailView(View):
                     "title": post.title,
                     "post": post,
                     "form": comment_form,
-                    "comments": comment
+                    "comments": comment,
 
                     }
                 return render(request, self.template_name, context)
@@ -103,16 +105,19 @@ class PostDetailView(View):
                 temp = comment_form.save(commit=False)
                 parent = comment_form['parent'].value()
                 content_data = comment_form.clean_message()
-
+                user1 = User.objects.filter(id=post.user_id.id)
                 if parent == '':
-                    #Set a blank path then save it to get an ID
+                    # Set a blank path then save it to get an ID
                     temp.path = []
                     temp.author = request.user
                     temp.post = post
                     temp.save()
+
                     temp.path = [temp.id]
+                    notify.send(request.user, recipient=user1,
+                                verb='Post comment', action_object=post)
                 else:
-                    #Get the parent node
+                    # Get the parent node
                     node = Comment.objects.filter(id=parent)
                     if node.exists() and node.count() == 1:
                         node = node.first()
@@ -120,11 +125,13 @@ class PostDetailView(View):
                     temp.path = node.path
                     temp.author = request.user
                     temp.post = post
-                    #Store parents path then apply comment ID
+                    # Store parents path then apply comment ID
                     temp.save()
                     temp.path.append(temp.id)
+                    notify.send(request.user, recipient=user1,
+                                verb='You have reply on your comment')
 
-                #Final save for parents and children
+                # Final save for parents and children
                 temp.save()
         comments = Comment.objects.all().order_by('path')
         return HttpResponseRedirect('/{0}'.format(post.slug))
@@ -208,11 +215,13 @@ class ProfileView(View):
 
             user_form.save()
             profile_form.save()
-            messages.add_message(request, messages.SUCCESS, 'Your profile was successfully updated!')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Your profile was successfully updated!')
 
             return HttpResponseRedirect('/')
         else:
-            messages.add_message(request, messages.ERROR, 'Please correct the error below')
+            messages.add_message(request, messages.ERROR,
+                                 'Please correct the error below')
             return HttpResponseRedirect('/')
 
 
