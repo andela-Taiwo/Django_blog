@@ -1,9 +1,9 @@
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.db.models.signals import post_save as signals_post_save
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
-
+from notifications.signals import notify
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -93,3 +93,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(signals_post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+# 
+# def my_handler(sender, instance, created, **kwargs):
+#     notify.send(instance, verb='was saved')
+#
+#
+# post_save.connect(my_handler, sender=Post)

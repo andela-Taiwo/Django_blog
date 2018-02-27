@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'markdownx',
     'storages',
+    'notifications',
 )
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
