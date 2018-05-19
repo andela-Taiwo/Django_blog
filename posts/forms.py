@@ -45,6 +45,7 @@ class SignUpForm(UserCreationForm):
 class LogInForm(forms.ModelForm):
     class Meta:
         model = User
+        password = forms.CharField(widget=forms.PasswordInput)
         fields = ["username", "password"]
 
     def clean_username(self):
