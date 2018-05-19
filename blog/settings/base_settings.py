@@ -24,6 +24,7 @@ TEMPLATE_DEBUG = False
 LOGIN_URL = '/login'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com',
                  '.django-creek.herokuapp.com']
+# ALLOWED_HOSTS = ['*']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -100,6 +101,16 @@ DATABASES = {
         'PORT':  os.environ.get('DATABASE_PORT'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'HOST': 'db',
+#         'PORT': 5432,
+#     }
+# }
 
 if 'test' in sys.argv:
     DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
