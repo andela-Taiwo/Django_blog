@@ -1,9 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from posts.models import User
 from django.contrib.postgres.fields import ArrayField
 from posts.models import Post
 
 # Create your models here.
+
+COMMENT_STATUS = (("AP", 'Approved'),
+                  ("DC", "Declined"),
+                  )
 
 
 class Comment(models.Model):
@@ -12,6 +16,8 @@ class Comment(models.Model):
     message = models.TextField(max_length=4000)
     post = models.ForeignKey(Post, default=1)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    approval = models.CharField(max_length=2, choices=COMMENT_STATUS,
+                                default='DC')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     path = ArrayField(models.IntegerField(blank=True, editable=False))

@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from markdownx.utils import markdownify
 from django.views.generic import View
-from django.contrib.auth.models import User
+from .models import User
 # from notification.models import Notification
 from notifications.signals import notify
 from posts.models import Post
@@ -29,7 +29,6 @@ class PostView(View):
         posts = Post.objects.all()
         for post in posts:
             post.content = markdownify(post.content)
-        # import pdb; pdb.set_trace()
         context = {
             'title': title,
             'posts': posts,
@@ -43,8 +42,9 @@ class PostView(View):
         if request.method == 'POST':
             if form.is_valid():
                 post = form.save(commit=False)
+                # import pdb; pdb.set_trace()
                 post.author = request.user
-                post.user_id = User.objects.get(pk=request.user.pk)
+                post.user_id_id = User.objects.get(pk=request.user.pk).pk
                 post.save()
         return HttpResponseRedirect('/')
 
@@ -157,7 +157,7 @@ class LoginView(View):
     def get(self, request, *args, **kwargs):
         #
         title = " DjangoCreek Login "
-        form = LogInForm(request.POST or None)
+        form = LogInForm()
         context = {
             "title": title,
             "form": form,
@@ -179,7 +179,7 @@ class SignUpView(View):
 
             raw_password = form.cleaned_data.get('password1')
             auth_login(request, user)
-        return HttpResponseRedirect('/posts')
+        return HttpResponseRedirect('/')
 
     def get(self, request, *args, **kwargs):
         form = SignUpForm()

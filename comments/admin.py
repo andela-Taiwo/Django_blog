@@ -8,5 +8,13 @@ class CommentAdmin(admin.ModelAdmin):
         'message', 'author', 'date_created'
     ]
 
+    actions = ['make_published']
+
+    def make_published(self, request, queryset):
+        queryset.update(approval='AP')
+    make_published.short_description = "Mark selected stories as published"
+
+    fieldsets = (("Detail", {"fields": ("message", "approval")}),)
+
 
 admin.site.register(Comment, CommentAdmin)
