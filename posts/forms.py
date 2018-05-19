@@ -11,6 +11,9 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
+        password1 = forms.CharField(widget=forms.PasswordInput)
+        password2 = forms.CharField(label='Confirm password',
+                                    widget=forms.PasswordInput)
         fields = ["email", "first_name", "last_name", "password1", "password2",
                   "username", "birth_date"]
 
@@ -67,23 +70,6 @@ class PostForm(forms.ModelForm):
     def clean_content(self):
         content = self.cleaned_data.get("content")
         return content
-
-    # def save(self):
-    #     instance = super().save(commit=False)
-    #
-    #     max_length = Post._meta.get_field('slug').max_length
-    #     instance.slug = orig = slugify(instance.title)[:max_length]
-    #
-    #     for x in itertools.count(1):
-    #         if not Post.objects.filter(slug=instance.slug).exists():
-    #             break
-    #
-    #         # Truncate the original slug dynamically. Minus 1 for the hyphen.
-    #         instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
-    #
-    #     instance.save()
-    #
-    #     return instance
 
 
 class ContactForm(forms.Form):
