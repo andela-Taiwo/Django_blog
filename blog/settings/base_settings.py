@@ -15,7 +15,6 @@ def bool_env(val):
     return True if os.environ.get(val, False) == 'True' else False
 
 #
-
 AUTH_USER_MODEL = 'posts.User'
 DEBUG = True
 
