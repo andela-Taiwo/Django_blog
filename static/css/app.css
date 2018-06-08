@@ -26,6 +26,12 @@ margin-top: 20px;
   color: white;
   text-align: center;
 }
+.bg-detail{
+  min-width: 150px;
+  max-width: 100%;
+  height: 200px;
+}
+
 
 .card-link {
   font-size: 12px; !important

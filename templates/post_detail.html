@@ -20,7 +20,7 @@
     <div class="card-body">
       <h3>{{ post.title}}</h3>
       {% if post.blog_image %}
-      <img  src="{{ post.blog_image.url }}" alt="{{post.title}}" height="500" >
+      <img class="bg-detail" src="{{ post.blog_image.url }}" alt="{{post.title}}" >
       {% endif %}
       <p>{{ post.content|safe|linebreaks }}</p>
     </div>
